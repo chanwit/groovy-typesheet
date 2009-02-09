@@ -1,0 +1,4 @@
+This is a typesheet implementation for Groovy.
+Components:
+ - Builder and DOM
+ - Transformation (using code from GJIT)
