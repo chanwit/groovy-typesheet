@@ -3,3 +3,4 @@ bin-groovy
 target
 .settings
 lib
+*._java

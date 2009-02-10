@@ -20,7 +20,10 @@ class FieldTests extends GroovyTestCase {
     void test_bind_list_of_fields() {
         def b = new Builder()
         def r = b.type(int) {
-            field([f1, f2]) { f1 >> int.class; f2 >> String.class }
+            field([f1, f2]) {
+                f1 >> int.class
+                f2 >> String.class
+            }
         }
         assert r instanceof Type
         assert r.klass == int

@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE plist PUBLIC "-//Apple Computer//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+    <dict>
+        <key>filters</key>
+        <dict>
+            <key>excludeDirs</key>
+            <array>
+                <string>.git</string>
+                <string>.settings</string>
+                <string>bin</string>
+                <string>bin-groovy</string>
+                <string>classes</string>
+                <string>test-classes</string>
+            </array>
+            <key>excludeFiles</key>
+            <array>
+                <string>*.class</string>
+                <string>*._java</string>
+            </array>
+            <key>includeDirs</key>
+            <array />
+            <key>includeFiles</key>
+            <array>
+                <string>*.java</string>
+                <string>*.groovy</string>
+                <string>*.xml</string>
+                <string>*.gant</string>
+                <string>*.properties</string>
+                <string>README</string>
+                <string>TEST-*</string>
+                <string>*.g</string>
+            </array>
+        </dict>
+        <key>fileTriggers</key>
+        <dict>
+            <key>b</key>
+            <string>src\org\codehaus\groovy\typesheet\Builder.java</string>
+            <key>bui</key>
+            <string>src\org\codehaus\groovy\typesheet\Builder.java</string>
+            <key>ty</key>
+            <string>src\org\codehaus\groovy\typesheet\dom\Type.java</string>
+        </dict>
+    </dict>
+</plist>
