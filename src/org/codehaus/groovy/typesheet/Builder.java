@@ -1,12 +1,13 @@
 package org.codehaus.groovy.typesheet;
 
+import groovy.lang.Closure;
+import groovy.lang.GroovyObjectSupport;
+
 import java.util.HashMap;
-import java.util.Map;
+import java.util.List;
 
 import org.codehaus.groovy.typesheet.dom.Field;
 import org.codehaus.groovy.typesheet.dom.Type;
-
-import groovy.lang.*;
 
 public class Builder extends GroovyObjectSupport {
 
@@ -32,10 +33,32 @@ public class Builder extends GroovyObjectSupport {
             c.setDelegate(this);
             c.setResolveStrategy(Closure.DELEGATE_ONLY);
             c.call();
-            Field field = new Field(v.getName(), v.getKlass());
-            this.type.getFields().add(field);
+            if(v.getKlass()!=null) {
+                Field field = new Field(v.getName(), v.getKlass());
+                this.type.getFields().add(field);
+            } else {
+                throw new RuntimeException(v.getName() + " is bound but not retyped");
+            }
+        } else if(f instanceof List) {
+            List l = (List)f;
+            for(Object o: l) {
+                if((o instanceof Var) == false)
+                    throw new RuntimeException("Error " + f + " is already bound to something");
+            }
+            c.setDelegate(this);
+            c.setResolveStrategy(Closure.DELEGATE_ONLY);
+            c.call();
+            for(Object o: l) {
+                Var v = (Var)o;
+                if(v.getKlass()!=null) {
+                    Field field = new Field(v.getName(), v.getKlass());
+                    this.type.getFields().add(field);
+                } else {
+                    throw new RuntimeException(v.getName() + " is bound but not retyped");
+                }
+            }
         } else {
-            throw new RuntimeException("error");
+            throw new RuntimeException("Error " + f + " is already bound to something");
         }
     }
 
@@ -52,10 +75,6 @@ public class Builder extends GroovyObjectSupport {
             vars.put(name, v);
             return v;
         }
-    }
-
-    public Map retype(Map m) {
-        return m;
     }
 
 }
