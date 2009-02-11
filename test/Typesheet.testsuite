@@ -119,17 +119,24 @@ method(name(a)) {
         b ~> int;
     }
 }
->>  OK
+>>                                              OK
 <<
 method(name(a)) {
     a ~> int;
     local(b) { b ~> int; }
 }
->>  OK
+>>                                              OK
 <<
 method(static main(args)) {
     args ~> String[];
-    ret ~> void;
+    return ~> void;
     call(println(s)) { s ~> String; }
+}
+>>                                              OK
+<<
+method(static main(args)) {
+    args ~> String[];
+    return ~> void;
+    call(println(Integer#minus(a))) { a ~> int; }
 }
 >> OK

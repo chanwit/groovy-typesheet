@@ -101,7 +101,8 @@ methodArgsBindingList
     ;
 
 methodArgBinding
-    :   (qualifiedPattern WS)? IDENT
+    :   methodPattern
+    |   (qualifiedPattern WS)? IDENT
     |   qualifiedPattern
     ;
 

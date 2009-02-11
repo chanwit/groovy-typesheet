@@ -30,6 +30,7 @@
                 <string>README</string>
                 <string>TEST-*</string>
                 <string>*.g</string>
+                <string>*.testsuite</string>
             </array>
         </dict>
         <key>fileTriggers</key>
