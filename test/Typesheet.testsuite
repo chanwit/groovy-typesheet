@@ -1,0 +1,135 @@
+gunit Typesheet;
+
+@header{package org.codehaus.groovy.typesheet.parser;}
+
+type:
+    "int"       OK
+    "long"      OK
+    "java.lang.Object"  OK
+    // array
+    "int[]"     OK
+    "Object[]"  OK
+    "java.lang.Object[]"    OK
+
+qualifiedPattern:
+    "*.Object"                  OK
+    "Object+"                   OK
+    "*Object*+"                 OK
+    // array
+    "Object[]+"                 OK
+    "*.Object[]"                OK    
+
+classPattern:
+    "A"                                             OK
+    "java.lang.Object"                              OK
+    "java.lang.Object+"                             OK
+    "Object+"                                       OK
+    "* *.Object"                                    OK
+    "*.Object"                                      OK
+    "public java.lang.Object"                       OK
+    "static java.lang.Object.InnerClass"            OK
+    "static public java.lang.Object.InnerClass"     OK
+    "static * java.lang.Object.InnerClass"          OK
+    "*java.lang.Object+"                            OK
+    "*java.*.Object+"                               OK
+    "int"                                           OK
+    "int[]"                                         OK
+    "public java.lang.Object[]"                     OK
+    "public java.lang.Object[]+"                    OK    
+
+fieldPCD:
+    "field(A)"      OK
+    "field(_)"      OK // anonymous binding
+    "field()"       FAIL
+
+classPCD:
+    "class(A)"      OK
+    "class(A+)"     OK
+    "class()"       FAIL
+    "class(int)"    OK
+
+retypeDecl:
+    "a ~> INT;"       OK
+
+varList:
+    "a,b,c"         OK
+
+fieldBlock:
+    "field(a) { a ~> int; }"              OK
+    "field(a,b,c) { a,b,c ~> int; }"      OK
+
+localBlock:
+    "local(a) { a ~> int; }"    OK
+
+methodArgBinding:
+    "int a"   OK
+    "java.lang.Object a"  OK
+    "int"   OK
+    "java.lang.Object"  OK
+    "a"     OK
+    "name"                      OK
+    "java.lang.Object"          OK
+    "int"                       OK
+    "int a"                     OK
+    " a"                        FAIL
+    "b"                         OK
+    // array
+    "int[] a"                   OK
+    "String[]"                  OK
+    "String[] args"             OK
+
+methodArgs:
+    "(a)"    OK
+
+methodPattern:
+    "name(a)"                               OK
+    "java.lang.Object#name(a)"              OK
+    "static * java.lang.Object java.lang.Number#name(a)"     OK
+
+methodPCD:
+    "method(name)"                              OK
+    "method(name(a))"                           OK
+    "method(name(a)"                            FAIL
+    "method(name(int,int,a))"                   OK
+    "method(public   name(int,int,a))"          OK
+    "method(static public   name(int,int,a))"   OK
+    "method(static * name(int,int,a))"          OK
+    "method(static name(int,int,a))"            OK
+    "method(static name(Object+ b,*,a))"        OK
+    "method(name(Object+ b,* c,a))"             OK
+
+    // test cases with return type
+    "method(void name(a))"                              OK
+    "method(java.lang.Object name(a))"                  OK
+    "method(static public java.lang.Object name(a))"    OK
+    "method(static * java.lang.Object name(a))"         OK
+    "method(* java.lang.Object name(a))"                OK
+    "method(* java.*lang.Object name(a))"               OK
+    "method(* java.lang.Object name(a))"                OK
+    
+    // this case fail, need rework at methodPCD for better wildcard
+    // "method(* java*.lang.Object name(a))"            OK
+
+methodBlock:
+    "method(name(a)) { a ~> int; }"             OK
+<<
+method(name(a)) {
+    a ~> int;
+    local(b) {
+        b ~> int;
+    }
+}
+>>  OK
+<<
+method(name(a)) {
+    a ~> int;
+    local(b) { b ~> int; }
+}
+>>  OK
+<<
+method(static main(args)) {
+    args ~> String[];
+    ret ~> void;
+    call(println(s)) { s ~> String; }
+}
+>> OK

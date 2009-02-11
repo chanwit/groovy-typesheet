@@ -4,3 +4,6 @@ target
 .settings
 lib
 *._java
+TypesheetLexer.java
+TypesheetParser.java
+Typesheet.tokens

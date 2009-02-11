@@ -23,33 +23,46 @@ ant.path ( id : 'compileJarSet' ) {
   fileset ( dir : groovyHome + '/lib' , includes : 'commons-cli*.jar' )
   fileset ( dir : groovyHome + '/lib' , includes : 'asm*.jar' )
   // Picks up antlr as well as ant. This is intended.
-  fileset ( dir : groovyHome + '/lib' , includes : 'ant*.jar' )
+  fileset ( dir : groovyHome + '/lib' , includes : 'ant-*.jar' )
+
   // local lib
   fileset ( dir : './lib'  , includes : 'ant*.jar' )
+    fileset ( dir : './lib' , includes : 'stringtemplate*.jar')
 }
 
 ant.path ( id : 'testJarSet' ) {
-  path ( refid : 'compileJarSet' )
-  fileset ( dir : groovyHome + '/lib' , includes : 'junit*.jar' )
+    path ( refid : 'compileJarSet' )
+    fileset ( dir : groovyHome + '/lib' , includes : 'junit*.jar' )
 }
 
 doCompile = { classpathRef, srcDir, destDir ->
-  ant.taskdef(  name : 'groovyc' ,
+    // define groovy task
+    ant.taskdef(name : 'groovyc' ,
                 classname: 'org.codehaus.groovy.ant.Groovyc' ,
                 classpathref: classpathRef)
-  ant.groovyc(  srcdir: srcDir,
+
+    // generate ANTLR parser
+    ant.java(classname: 'org.antlr.Tool', fork: true) {
+        arg(value: srcDir + 'Typesheet.g')
+        arg(value: "-fo")
+        arg(value: "src/org/codehaus/groovy/typesheet/parser")
+        classpath {
+            path ( refid : classpathRef )    
+        }
+    }
+    
+    // compile source
+    ant.groovyc(srcdir: srcDir,
                 destdir: destDir,
                 fork: 'false',
                 failonerror: 'true') {
-    classpath {
-      pathelement ( location : binDir )
-      pathelement ( location : testBinDir )
-      path ( refid : classpathRef )
+        classpath {
+            pathelement ( location : binDir )
+            pathelement ( location : testBinDir )
+            path ( refid : classpathRef )
+        }
+        javac(source : '1.5' , target : '1.5' , debug : 'on')
     }
-
-    javac(source : '1.5' , target : '1.5' , debug : 'on')
-
-  }
 }
 
 doTesting = { classpathRef ->
@@ -127,10 +140,27 @@ target(test:'Perform tests') {
   doTesting('testJarSet')
 }
 
+target(gunit:'Perform gunit') {
+    depends(compile)
+    ant.java(classname: 'org.antlr.gunit.Interp', fork: true) {
+        if(testcase==null) {
+            arg(value: testSourceDir + 'Typesheet.testsuite')
+        } else {
+            arg(value: testSourceDir + "${testcase}.testsuite")
+        }
+        classpath {
+            pathelement ( location : binDir )
+            pathelement ( location : testBinDir ) 
+            path ( refid : 'compileJarSet' )    
+        }
+    }  
+}
+
 target(coverage:'Coverate tests') {
   usingCobertura = true
   depends(compileTests)
   doTesting('testJarSet')
 }
+
 
 setDefaultTarget(test)
