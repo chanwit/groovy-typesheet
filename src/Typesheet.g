@@ -4,7 +4,7 @@ options {
     output=AST;
     ASTLabelType=CommonTree;
     backtrack=true;
-    k=3;
+    k=5;
 }
 
 tokens {
@@ -31,6 +31,20 @@ tokens {
     PATTERN;
     PAT_OPTION;
     MATCH_SUBCLASS;
+
+    MATCH_PCD;
+    MATCH_BLOCK;
+
+    METHOD_PCD;
+    METHOD_BLOCK;
+    ARGS;
+    ARG;
+
+    CALL_PCD;
+    CALL_BLOCK;
+
+    MODIFIERS;
+    STATIC = 'static';
 }
 
 @parser::header {package org.codehaus.groovy.typesheet.parser;}
@@ -91,28 +105,52 @@ methodBlock
 
 methodPCD
     :   'method' WS? '(' WS? methodPattern? WS? ')'
+
+        -> ^(METHOD_PCD methodPattern?)
     ;
 
+// for method definition
 methodPattern
-    :   ('static' WS)? 
-        (modifiers WS)? 
-        (qualifiedPattern WS)? // return type class name
+    :   (STATIC WS)?
+        (modifiers WS)?
+        methodReturnTypePattern? // return type class name
         (qualifiedPattern '#')? IDENT WS? // method name (fully qualified following by #)
-        methodArgs? // 
+        methodArgs?
+
+        -> STATIC? modifiers? methodReturnTypePattern? qualifiedPattern? IDENT methodArgs?
+    ;
+
+// for calling () is required
+methodCallPattern
+    :   (STATIC WS)?
+        (modifiers WS)?
+        methodReturnTypePattern? // return type class name
+        (qualifiedPattern '#')? IDENT WS? // method name (fully qualified following by #)
+        '(' WS? methodArgsBindingList? WS? ')'
+
+        -> STATIC? modifiers? methodReturnTypePattern? qualifiedPattern? IDENT methodArgsBindingList?
+    ;
+
+
+methodReturnTypePattern
+    :   qualifiedPattern WS!
     ;
 
 methodArgs
     :   '(' WS? methodArgsBindingList? WS? ')'
+
+        -> methodArgsBindingList?
     ;
 
 methodArgsBindingList
-    :   methodArgBinding (WS? ','  WS? methodArgBinding)*
+    :   methodArgBinding (WS!? ','!  WS!? methodArgBinding)*
     ;
 
 methodArgBinding
-    :   methodPattern
-    |   (qualifiedPattern WS)? IDENT
-    |   qualifiedPattern
+    :   IDENT                           -> ^(ARG IDENT)
+    |   qualifiedPattern                -> ^(ARG qualifiedPattern)
+    |   qualifiedPattern WS IDENT       -> ^(ARG qualifiedPattern IDENT)    
+    // |   methodCallPattern               -> ^(ARG methodCallPattern)
     ;
 
 methodBlockMember
@@ -129,43 +167,51 @@ localBlock
 localPCD
     :   'local' WS? '(' WS? (bindingList WS?)+ WS? ')'
     ;
-    
+
 callBlock
     :   callPCD WS? '{' WS? (retypeDecl WS?)+ WS? '}'
+
+        -> ^(CALL_BLOCK callPCD retypeDecl+ )
     ;
-        
-callPCD 
+
+callPCD
     :   'call' WS? '(' WS? methodPattern WS? ')'
+
+        -> ^(CALL_PCD methodPattern)
     ;
-    
+
 matchBlock
     :   matchPCD WS? '{' WS? matchBlockBody WS? '}'
+
+        -> ^(MATCH_BLOCK matchPCD matchBlockBody)
     ;
-    
+
 matchPCD
     :   'match' WS? '(' WS? (bindingList WS?)+ WS? ')'
+
+        -> ^(MATCH_PCD bindingList+)
     ;
-    
+
 matchBlockBody
-    :   (caseStmt WS?)+
-        (defaultStmt WS?)?
+    :   (caseStmt WS!?)+
+        (defaultStmt WS!?)?
     ;
-    
+
 caseStmt
     :   'case' WS? ':' WS? callBlock
-    
+
         -> ^(CASE callBlock)
     ;
-    
+
 defaultStmt
     :   'default' WS? ':' WS? '{' WS? (retypeDecl WS?)+ WS? '}'
-    
+
         -> ^(DEFAULT_CASE retypeDecl+)
     ;
-        
+
 retypeDecl
     :   varList WS? '~>' WS? type WS? ';'
-    
+
         -> ^(RETYPE varList type)
     ;
 
@@ -179,7 +225,7 @@ varList
 
 type
     :   qualifiedIdentifier WS? array?  ->  ^(TYPE qualifiedIdentifier array?)
-    |   primitives array?           ->  ^(PRIMITIVE primitives array?)
+    |   primitives array?               ->  ^(PRIMITIVE primitives array?)
     ;
 
 primitives
@@ -202,23 +248,24 @@ bindingList
 qualifiedPattern
     :   qualifiedPatternHead array? subclass?
         -> ^(PATTERN qualifiedPatternHead ^(PAT_OPTION array? subclass?))
-        
-    |   primitives array?   
+
+    |   primitives array?
         -> ^(PRIMITIVE primitives array?)
     ;
-    
+
 qualifiedPatternHead
     :   identifierPattern (DOT identifierPattern)*
-    ;    
-    
+    ;
+
 subclass
     :   '+'
+
         -> MATCH_SUBCLASS
-    ;    
-    
+    ;
+
 array
     :   ('[' WS? ']')+
-    
+
         -> ARRAY
     ;
 

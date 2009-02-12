@@ -15,6 +15,9 @@ qualifiedPattern:
     "*.Object"                  OK
     "Object+"                   OK
     "*Object*+"                 OK
+    "*"                         OK
+    "java.lang.Object"          OK
+
     // array
     "Object[]+"                 OK
     "*.Object[]"                OK
@@ -85,6 +88,7 @@ methodPattern:
     "name(a)"                               OK
     "java.lang.Object#name(a)"              OK
     "static * java.lang.Object java.lang.Number#name(a)"     OK
+    "*"                                     FAIL
 
 methodPCD:
     "method(name)"                              OK
@@ -111,7 +115,7 @@ methodPCD:
     // "method(* java*.lang.Object name(a))"            OK
 
 methodBlock:
-    "method(name(a)) { a ~> int; }"             OK
+    "method(name(a)) { a ~> int; }"                 OK
 <<
 method(name(a)) {
     a ~> int;
@@ -119,27 +123,27 @@ method(name(a)) {
         b ~> int;
     }
 }
->>                                              OK
+>>                                                  OK
 <<
 method(name(a)) {
     a ~> int;
     local(b) { b ~> int; }
 }
->>                                              OK
+>>                                                  OK
 <<
 method(static main(args)) {
     args ~> String[];
     return ~> void;
     call(println(s)) { s ~> String; }
 }
->>                                              OK
+>>                                                  OK
 <<
 method(static main(args)) {
     args ~> String[];
     return ~> void;
     call(println(Integer#minus(a))) { a ~> int; }
 }
->>                                              OK
+>>                                                  OK
 // method match with class name
 <<
 method(static Main#main(args)) {
@@ -147,7 +151,7 @@ method(static Main#main(args)) {
     return ~> void;
     call(println(Integer#minus(a))) { a ~> int; }
 }
->>                                              OK
+>>                                                  OK
 <<
 method(static Main#main(args)) {
     args ~> String[];
@@ -158,10 +162,10 @@ method(static Main#main(args)) {
         default: { a ~> String; }
     }
 }
->>                                              OK
+>>                                                  OK
 
 defaultStmt:
-    "default: { n ~> int; }"                    OK
+    "default: { n ~> int; }"                        OK
 
 caseStmt:
     "case: call(Integer#minus(_)) { n ~> int; }"    OK
@@ -172,4 +176,4 @@ match(n) {
     case: call(Integer#plus(_)) { n ~> int; }
     default: { n ~> String; }
 }
->>                                              OK
+>>                                                  OK

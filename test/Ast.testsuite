@@ -13,3 +13,28 @@ classPCD:
     "class(java.lang.Object+)" -> (CLASS_MATCHER (PATTERN java . lang . Object (PAT_OPTION MATCH_SUBCLASS)))
     "class(java.lang.Object[])" -> (CLASS_MATCHER (PATTERN java . lang . Object (PAT_OPTION ARRAY)))
     "class(java.lang.Object)" -> (CLASS_MATCHER (PATTERN java . lang . Object PAT_OPTION))
+    
+methodArgBinding:
+    "* c" -> (ARG (PATTERN * PAT_OPTION) c)
+    "java.lang.Object c" -> (ARG (PATTERN java . lang . Object PAT_OPTION) c)
+
+methodPCD:
+    "method(name)" -> (METHOD_PCD name)
+    "method(name(a))" -> (METHOD_PCD name (ARG a))
+    "method(name(a)"                            FAIL
+    "method(name(int,int,a))" -> (METHOD_PCD name (ARG (PRIMITIVE int)) (ARG (PRIMITIVE int)) (ARG a))
+    "method(public   name(int,a))" -> (METHOD_PCD public name (ARG (PRIMITIVE int)) (ARG a))
+    "method(static public   name(int,a))" -> (METHOD_PCD static public name (ARG (PRIMITIVE int)) (ARG a))
+    "method(static * name(int ,a))" -> (METHOD_PCD static * name (ARG (PRIMITIVE int)) (ARG a))
+    "method(static name(int, a))" -> (METHOD_PCD static name (ARG (PRIMITIVE int)) (ARG a))
+    "method(static name(Object+ b,*,a))" -> (METHOD_PCD static name (ARG (PATTERN Object (PAT_OPTION MATCH_SUBCLASS)) b) (ARG (PATTERN * PAT_OPTION)) (ARG a))
+    "method(name(Object+ b,* c,a))" -> (METHOD_PCD name (ARG (PATTERN Object (PAT_OPTION MATCH_SUBCLASS)) b) (ARG (PATTERN * PAT_OPTION) c) (ARG a))
+
+    // test cases with return type
+    "method(void name(a))"                              OK
+    "method(java.lang.Object name(a))"                  OK
+    "method(static public java.lang.Object name(a))"    OK
+    "method(static * java.lang.Object name(a))"         OK
+    "method(* java.lang.Object name(a))"                OK
+    "method(* java.*lang.Object name(a))"               OK
+    "method(* java.lang.Object name(a))"                OK
