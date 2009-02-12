@@ -17,7 +17,7 @@ qualifiedPattern:
     "*Object*+"                 OK
     // array
     "Object[]+"                 OK
-    "*.Object[]"                OK    
+    "*.Object[]"                OK
 
 classPattern:
     "A"                                             OK
@@ -35,7 +35,7 @@ classPattern:
     "int"                                           OK
     "int[]"                                         OK
     "public java.lang.Object[]"                     OK
-    "public java.lang.Object[]+"                    OK    
+    "public java.lang.Object[]+"                    OK
 
 fieldPCD:
     "field(A)"      OK
@@ -106,7 +106,7 @@ methodPCD:
     "method(* java.lang.Object name(a))"                OK
     "method(* java.*lang.Object name(a))"               OK
     "method(* java.lang.Object name(a))"                OK
-    
+
     // this case fail, need rework at methodPCD for better wildcard
     // "method(* java*.lang.Object name(a))"            OK
 
@@ -139,4 +139,37 @@ method(static main(args)) {
     return ~> void;
     call(println(Integer#minus(a))) { a ~> int; }
 }
->> OK
+>>                                              OK
+// method match with class name
+<<
+method(static Main#main(args)) {
+    args ~> String[];
+    return ~> void;
+    call(println(Integer#minus(a))) { a ~> int; }
+}
+>>                                              OK
+<<
+method(static Main#main(args)) {
+    args ~> String[];
+    return ~> void;
+    call(println(Integer#minus(a))) { a ~> int; }
+    call(println(Integer#minus(a))) && match(a) {
+        case: call(Integer#plus(_)) { a ~> int; }
+        default: { a ~> String; }
+    }
+}
+>>                                              OK
+
+defaultStmt:
+    "default: { n ~> int; }"                    OK
+
+caseStmt:
+    "case: call(Integer#minus(_)) { n ~> int; }"    OK
+
+matchBlock:
+<<
+match(n) {
+    case: call(Integer#plus(_)) { n ~> int; }
+    default: { n ~> String; }
+}
+>>                                              OK

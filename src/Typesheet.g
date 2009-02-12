@@ -110,6 +110,7 @@ methodBlockMember
     :   retypeDecl
     |   localBlock
     |   callBlock
+    |   callPCD WS? '&&' WS? matchBlock
     ;
 
 localBlock
@@ -121,11 +122,32 @@ localPCD
     ;
     
 callBlock
-    :   callPCD WS? '{' WS? (retypeDecl WS?)+ WS?'}'
+    :   callPCD WS? '{' WS? (retypeDecl WS?)+ WS? '}'
     ;
         
 callPCD 
     :   'call' WS? '(' WS? methodPattern WS? ')'
+    ;
+    
+matchBlock
+    :   matchPCD WS? '{' WS? matchBlockBody WS? '}'
+    ;
+    
+matchPCD
+    :   'match' WS? '(' WS? (bindingList WS?)+ WS? ')'
+    ;
+    
+matchBlockBody
+    :   (caseStmt WS?)+
+        (defaultStmt WS?)?
+    ;
+    
+caseStmt
+    :   'case' WS? ':' WS? callBlock
+    ;
+    
+defaultStmt
+    :   'default' WS? ':' WS? '{' WS? (retypeDecl WS?)+ WS? '}'
     ;
         
 retypeDecl
