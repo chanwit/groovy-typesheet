@@ -1,4 +1,10 @@
 This is a typesheet implementation for Groovy.
 Components:
- - Builder and DOM
+ - Builder and DOM (now using ANTLR)
  - Transformation (using code from GJIT)
+ 
+ Dependencies
+ ============
+ - ANTLR 3.1.1
+ - Stringtemplate 3.2
+ 
