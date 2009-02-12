@@ -22,6 +22,15 @@ tokens {
     ADVICE;
     PCD_BLOCK;
     PCD;
+    RETYPE;
+    CASE;
+    DEFAULT_CASE;
+    TYPE;
+    PRIMITIVE;
+    ARRAY;
+    PATTERN;
+    PAT_OPTION;
+    MATCH_SUBCLASS;
 }
 
 @parser::header {package org.codehaus.groovy.typesheet.parser;}
@@ -29,27 +38,27 @@ tokens {
 
 compilationUnit
     :
-        aspect+
+        classBlock+
 
-        -> ^(UNIT aspect+)
+        -> ^(UNIT classBlock+)
     ;
 
-aspect
+classBlock
     :
         classPCD WS? '{' WS? (member WS?)+ WS? '}'
 
-        -> ^(ASPECT classPCD member+)
+        -> ^(CLASS classPCD member+)
     ;
 
 classPCD
     :
         'class' WS? '(' WS? classPattern WS? ')'
 
-        -> ^(CLASS classPattern)
+        -> ^(CLASS_MATCHER classPattern)
     ;
 
 classPattern
-    :   ('static' WS)? (modifiers WS)? classPatternRest
+    :   ('static' WS!)? (modifiers WS!)? classPatternRest
     ;
 
 classPatternRest
@@ -144,14 +153,20 @@ matchBlockBody
     
 caseStmt
     :   'case' WS? ':' WS? callBlock
+    
+        -> ^(CASE callBlock)
     ;
     
 defaultStmt
     :   'default' WS? ':' WS? '{' WS? (retypeDecl WS?)+ WS? '}'
+    
+        -> ^(DEFAULT_CASE retypeDecl+)
     ;
         
 retypeDecl
-    :   (var | varList) WS? '~>' WS? type WS?';'
+    :   varList WS? '~>' WS? type WS? ';'
+    
+        -> ^(RETYPE varList type)
     ;
 
 var
@@ -159,12 +174,12 @@ var
     ;
 
 varList
-    :   IDENT (WS? ',' WS? IDENT)+
+    :   IDENT (WS? ',' WS? IDENT)*
     ;
 
 type
-    :   qualifiedIdentifier WS? array?
-    |   primitives WS? array?
+    :   qualifiedIdentifier WS? array?  ->  ^(TYPE qualifiedIdentifier array?)
+    |   primitives array?           ->  ^(PRIMITIVE primitives array?)
     ;
 
 primitives
@@ -177,20 +192,34 @@ primitives
     |   'double'
     |   'float'
     |   'void'
-    |   'def'
+    |   'def'       -> 'void'
     ;
 
 bindingList
-    :   IDENT (WS? ',' WS? IDENT)*
+    :   IDENT (WS!? ',' WS!? IDENT)*
     ;
 
 qualifiedPattern
-    :   identifierPattern (DOT identifierPattern)* array? ('+')?
-    |   primitives array?
+    :   qualifiedPatternHead array? subclass?
+        -> ^(PATTERN qualifiedPatternHead ^(PAT_OPTION array? subclass?))
+        
+    |   primitives array?   
+        -> ^(PRIMITIVE primitives array?)
     ;
+    
+qualifiedPatternHead
+    :   identifierPattern (DOT identifierPattern)*
+    ;    
+    
+subclass
+    :   '+'
+        -> MATCH_SUBCLASS
+    ;    
     
 array
     :   ('[' WS? ']')+
+    
+        -> ARRAY
     ;
 
 identifierPattern

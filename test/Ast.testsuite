@@ -2,3 +2,14 @@ gunit Typesheet;
 
 @header{package org.codehaus.groovy.typesheet.parser;}
 
+defaultStmt:
+    "default: { n ~> int; }"    ->  (DEFAULT_CASE (RETYPE n (PRIMITIVE int)))
+
+retypeDecl:
+    "n ~> int;" -> (RETYPE n (PRIMITIVE int))
+
+classPCD:
+    "class(int)" -> (CLASS_MATCHER (PRIMITIVE int))
+    "class(java.lang.Object+)" -> (CLASS_MATCHER (PATTERN java . lang . Object (PAT_OPTION MATCH_SUBCLASS)))
+    "class(java.lang.Object[])" -> (CLASS_MATCHER (PATTERN java . lang . Object (PAT_OPTION ARRAY)))
+    "class(java.lang.Object)" -> (CLASS_MATCHER (PATTERN java . lang . Object PAT_OPTION))
