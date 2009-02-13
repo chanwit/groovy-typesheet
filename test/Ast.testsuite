@@ -28,14 +28,13 @@ methodPCD:
     "method(name())" -> (METHOD_PCD name)
     "method(name(int))" -> (METHOD_PCD name (PRIMITIVE int))
     "method(Class#name(int))" -> (METHOD_PCD (PATTERN Class PAT_OPTION) name (PRIMITIVE int))
-
-/*<<
-method(name(Object[]+, long, String+)) {
+    "method(name(Object[]+, long, String+))" -> -> (METHOD_PCD name (PATTERN Object (PAT_OPTION ARRAY MATCH_SUBCLASS) (PRIMITIVE long) (PATTERN String (PAT_OPTION MATCH_SUBCLASS))))
+<<
+method(name) {
     local(x) { x ~> int;}
     args(a,b,c,d) { a ~> int;}
 }
->> -> ()
-*/
+>> -> (METHOD_PCD name)
 
 /*
     "method(name)" -> (METHOD_PCD name)
