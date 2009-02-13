@@ -64,6 +64,7 @@ fieldBlock:
 localBlock:
     "local(a) { a ~> int; }"    OK
 
+/*
 methodArgBinding:
     "int a"   OK
     "java.lang.Object a"  OK
@@ -80,7 +81,36 @@ methodArgBinding:
     "int[] a"                   OK
     "String[]"                  OK
     "String[] args"             OK
+*/
 
+qualifiedPatternList:
+    "java.lang.Object[]+,int"   OK
+
+methodArgTypes:
+    "(int)"                       OK
+    "(java.lang.Object)"          OK
+    "(java.lang.Object+)"         OK
+    "(java.lang.Object[]+)"       OK
+
+argsPCD:
+    "args(a,b,c)"   OK
+
+methodBlock:
+    "method(name(int)) { args(a) { a ~> int; } }"       OK
+
+<<
+method(name(java.lang.Object)) {
+    args(a) { a ~> int; }
+}
+>>                                                      OK
+
+<<
+method(name(Object[][]+, long, int, String+)) {
+    local(x) { x ~> int;}
+    args(a,b,c,d) { a ~> int;}
+}
+>>                                                      OK
+/*
 methodArgs:
     "(a)"    OK
 
@@ -177,3 +207,4 @@ match(n) {
     default: { n ~> String; }
 }
 >>                                                  OK
+*/

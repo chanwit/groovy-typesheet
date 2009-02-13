@@ -115,11 +115,22 @@ methodPattern
         (modifiers WS)?
         methodReturnTypePattern? // return type class name
         (qualifiedPattern '#')? IDENT WS? // method name (fully qualified following by #)
-        methodArgs?
+        methodArgTypes?
 
-        -> STATIC? modifiers? methodReturnTypePattern? qualifiedPattern? IDENT methodArgs?
+        -> STATIC? modifiers? methodReturnTypePattern? qualifiedPattern? IDENT methodArgTypes?
+    ;
+    
+methodArgTypes
+    :   '(' WS? qualifiedPatternList? WS? ')'
+    
+        -> qualifiedPatternList
+    ;
+    
+qualifiedPatternList
+    :   qualifiedPattern (WS!? ','! WS!? qualifiedPattern)*
     ;
 
+/*
 // for calling () is required
 methodCallPattern
     :   (STATIC WS)?
@@ -130,7 +141,7 @@ methodCallPattern
 
         -> STATIC? modifiers? methodReturnTypePattern? qualifiedPattern? IDENT methodArgsBindingList?
     ;
-
+*/
 
 methodReturnTypePattern
     :   qualifiedPattern WS!
@@ -169,7 +180,7 @@ localPCD
     ;
     
 argsBlock
-    :   localPCD WS? '{' WS? (retypeDecl WS?)+ WS? '}'
+    :   argsPCD WS? '{' WS? (retypeDecl WS?)+ WS? '}'
     ;
 
 argsPCD
