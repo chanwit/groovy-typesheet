@@ -123,7 +123,7 @@ methodPattern
 methodArgTypes
     :   '(' WS? qualifiedPatternList? WS? ')'
     
-        -> qualifiedPatternList
+        -> qualifiedPatternList?
     ;
     
 qualifiedPatternList

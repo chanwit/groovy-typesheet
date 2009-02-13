@@ -142,18 +142,23 @@ target(test:'Perform tests') {
 
 target(gunit:'Perform gunit') {
     depends(compile)
-    ant.java(classname: 'org.antlr.gunit.Interp', fork: true) {
-        if(testcase==null) {
-            arg(value: testSourceDir + 'Typesheet.testsuite')
-        } else {
-            arg(value: testSourceDir + "${testcase}.testsuite")
+    def tests=[]
+    if(testcase==null) {
+        tests = ['Typesheet', 'Ast']
+    } else {
+        tests = [testcase]
+    }
+    tests.each { t ->
+        ant.echo("testing " + t + ".testsuite")
+        ant.java(classname: 'org.antlr.gunit.Interp', fork: true) {        
+            arg(value: testSourceDir + "/" + t + ".testsuite")
+            classpath {
+                pathelement ( location : binDir )
+                pathelement ( location : testBinDir ) 
+                path ( refid : 'compileJarSet' )    
+            }
         }
-        classpath {
-            pathelement ( location : binDir )
-            pathelement ( location : testBinDir ) 
-            path ( refid : 'compileJarSet' )    
-        }
-    }  
+    }
 }
 
 target(coverage:'Coverate tests') {
