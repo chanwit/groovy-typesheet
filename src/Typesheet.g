@@ -137,19 +137,6 @@ qualifiedPatternList
     :   qualifiedPattern (WS!? ','! WS!? qualifiedPattern)*
     ;
 
-/*
-// for calling () is required
-methodCallPattern
-    :   (STATIC WS)?
-        (modifiers WS)?
-        methodReturnTypePattern? // return type class name
-        (qualifiedPattern '#')? IDENT WS? // method name (fully qualified following by #)
-        '(' WS? methodArgsBindingList? WS? ')'
-
-        -> STATIC? modifiers? methodReturnTypePattern? qualifiedPattern? IDENT methodArgsBindingList?
-    ;
-*/
-
 methodReturnTypePattern
     :   qualifiedPattern WS!
     ;
@@ -167,8 +154,7 @@ methodArgsBindingList
 methodArgBinding
     :   IDENT                           -> ^(ARG IDENT)
     |   qualifiedPattern                -> ^(ARG qualifiedPattern)
-    |   qualifiedPattern WS IDENT       -> ^(ARG qualifiedPattern IDENT)    
-    // |   methodCallPattern               -> ^(ARG methodCallPattern)
+    |   qualifiedPattern WS IDENT       -> ^(ARG qualifiedPattern IDENT)
     ;
 
 methodBlockMember

@@ -98,18 +98,31 @@ argsPCD:
 methodBlock:
     "method(name(int)) { args(a) { a ~> int; } }"       OK
 
+// args only
 <<
 method(name(java.lang.Object)) {
     args(a) { a ~> int; }
 }
 >>                                                      OK
 
+// arg and local
 <<
 method(name(Object[][]+, long, int, String+)) {
     local(x) { x ~> int;}
     args(a,b,c,d) { a ~> int;}
 }
 >>                                                      OK
+
+// call with args
+<<
+method(name(Object[][]+, long, int, String+)) {
+    local(x) { x ~> int;}
+    args(a,b,c,d) { a ~> int;}
+    call(println(*)) && args(a) {
+    }
+}
+>>                                                      OK
+
 /*
 methodArgs:
     "(a)"    OK
