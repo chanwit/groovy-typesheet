@@ -20,11 +20,22 @@ methodArgBinding:
     "java.lang.Object c" -> (ARG (PATTERN java . lang . Object PAT_OPTION) c)
 */    
 
+argsPCD:
+    "args(a,b,c)" -> (ARGS_PCD a b c)
+
 methodPCD:
     "method(name)" -> (METHOD_PCD name)
     "method(name())" -> (METHOD_PCD name)
     "method(name(int))" -> (METHOD_PCD name (PRIMITIVE int))
     "method(Class#name(int))" -> (METHOD_PCD (PATTERN Class PAT_OPTION) name (PRIMITIVE int))
+
+/*<<
+method(name(Object[]+, long, String+)) {
+    local(x) { x ~> int;}
+    args(a,b,c,d) { a ~> int;}
+}
+>> -> ()
+*/
 
 /*
     "method(name)" -> (METHOD_PCD name)

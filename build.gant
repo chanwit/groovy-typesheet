@@ -142,12 +142,11 @@ target(test:'Perform tests') {
 
 target(gunit:'Perform gunit') {
     depends(compile)
-    def tests=[]
-    if(testcase==null) {
+    def tests=[testcase]
+
+    if(testcase==null) 
         tests = ['Typesheet', 'Ast']
-    } else {
-        tests = [testcase]
-    }
+
     tests.each { t ->
         ant.echo("testing " + t + ".testsuite")
         ant.java(classname: 'org.antlr.gunit.Interp', fork: true) {        

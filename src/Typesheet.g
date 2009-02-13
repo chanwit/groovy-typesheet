@@ -42,6 +42,12 @@ tokens {
 
     CALL_PCD;
     CALL_BLOCK;
+    
+    LOCAL_PCD;
+    LOCAL_BLOCK;
+    
+    ARGS_PCD;
+    ARGS_BLOCK;
 
     MODIFIERS;
     STATIC = 'static';
@@ -173,18 +179,26 @@ methodBlockMember
 
 localBlock
     :   localPCD WS? '{' WS? (retypeDecl WS?)+ WS? '}'
+    
+        -> ^(LOCAL_BLOCK localPCD retypeDecl+)
     ;
 
 localPCD
     :   'local' WS? '(' WS? (bindingList WS?)+ WS? ')'
+    
+        -> ^(LOCAL_PCD bindingList+)
     ;
     
 argsBlock
     :   argsPCD WS? '{' WS? (retypeDecl WS?)+ WS? '}'
+    
+        -> ^(ARGS_BLOCK argsPCD retypeDecl+)
     ;
 
 argsPCD
     :   'args' WS? '(' WS? (bindingList WS?)+ WS? ')'
+    
+        -> ^(ARGS_PCD bindingList+)
     ;
     
 callBlock
@@ -261,7 +275,7 @@ primitives
     ;
 
 bindingList
-    :   IDENT (WS!? ',' WS!? IDENT)*
+    :   IDENT (WS!? ','! WS!? IDENT)*
     ;
 
 qualifiedPattern
