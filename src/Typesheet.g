@@ -51,6 +51,8 @@ tokens {
 
     MODIFIERS;
     STATIC = 'static';
+    
+    AND;
 }
 
 @parser::header {package org.codehaus.groovy.typesheet.parser;}
@@ -159,9 +161,11 @@ methodArgBinding
 
 methodBlockMember
     :   argsBlock
+    |   argsPCD WS? '&&' WS? matchBlock -> ^(AND argsPCD matchBlock)
     |   localBlock
     |   callBlock
-    |   callPCD WS? '&&' WS? matchBlock
+    |   callPCD WS? '&&' WS? argsBlock -> ^(AND callPCD argsBlock)
+    |   callPCD WS? '&&' WS? argsPCD WS? '&&' WS? matchBlock -> ^(AND callPCD argsPCD matchBlock)
     ;
 
 localBlock
