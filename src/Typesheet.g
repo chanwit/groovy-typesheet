@@ -244,7 +244,7 @@ var
     ;
 
 varList
-    :   IDENT (WS? ',' WS? IDENT)*
+    :   IDENT (WS!? ','! WS!? IDENT)*
     ;
 
 type

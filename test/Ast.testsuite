@@ -12,13 +12,7 @@ classPCD:
     "class(int)" -> (CLASS_MATCHER (PRIMITIVE int))
     "class(java.lang.Object+)" -> (CLASS_MATCHER (PATTERN java . lang . Object (PAT_OPTION MATCH_SUBCLASS)))
     "class(java.lang.Object[])" -> (CLASS_MATCHER (PATTERN java . lang . Object (PAT_OPTION ARRAY)))
-    "class(java.lang.Object)" -> (CLASS_MATCHER (PATTERN java . lang . Object PAT_OPTION))
-
-/*    
-methodArgBinding:
-    "* c" -> (ARG (PATTERN * PAT_OPTION) c)
-    "java.lang.Object c" -> (ARG (PATTERN java . lang . Object PAT_OPTION) c)
-*/    
+    "class(java.lang.Object)" -> (CLASS_MATCHER (PATTERN java . lang . Object PAT_OPTION))  
 
 argsPCD:
     "args(a,b,c)" -> (ARGS_PCD a b c)
@@ -37,14 +31,14 @@ method(name) {
 }
 >> -> (METHOD_BLOCK (METHOD_PCD name) (ARGS_BLOCK (ARGS_PCD a b c) (RETYPE a (PRIMITIVE int))))
 <<
-method(java.Main#name(int, String[])) {
+method(static java.Main#name(int, String[])) {
     local(a,b,c) { 
         a,b ~> String;
         c ~> int;        
     }
     args(a,b,c) { a ~> int; } 
 }
->> OK
+>> -> (METHOD_BLOCK (METHOD_PCD static (PATTERN java . Main PAT_OPTION) name (PRIMITIVE int) (PATTERN String (PAT_OPTION ARRAY))) (LOCAL_BLOCK (LOCAL_PCD a b c) (RETYPE a b (TYPE String)) (RETYPE c (PRIMITIVE int))) (ARGS_BLOCK (ARGS_PCD a b c) (RETYPE a (PRIMITIVE int))))
 
 /*
     "method(name)" -> (METHOD_PCD name)
