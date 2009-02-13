@@ -154,7 +154,7 @@ methodArgBinding
     ;
 
 methodBlockMember
-    :   retypeDecl
+    :   argsBlock
     |   localBlock
     |   callBlock
     |   callPCD WS? '&&' WS? matchBlock
@@ -167,7 +167,15 @@ localBlock
 localPCD
     :   'local' WS? '(' WS? (bindingList WS?)+ WS? ')'
     ;
+    
+argsBlock
+    :   localPCD WS? '{' WS? (retypeDecl WS?)+ WS? '}'
+    ;
 
+argsPCD
+    :   'args' WS? '(' WS? (bindingList WS?)+ WS? ')'
+    ;
+    
 callBlock
     :   callPCD WS? '{' WS? (retypeDecl WS?)+ WS? '}'
 
