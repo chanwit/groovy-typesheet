@@ -107,6 +107,7 @@ fieldPCD
 
 methodBlock
     :   methodPCD WS? '{' WS? (methodBlockMember WS?)+ WS? '}'
+        -> ^(METHOD_BLOCK methodPCD methodBlockMember+)
     ;
 
 methodPCD
