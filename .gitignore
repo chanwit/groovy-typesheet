@@ -7,3 +7,4 @@ lib
 TypesheetLexer.java
 TypesheetParser.java
 Typesheet.tokens
+.externalToolBuilders
