@@ -166,5 +166,17 @@ target(coverage:'Coverate tests') {
   doTesting('testJarSet')
 }
 
+target(run:'Test run') {
+    depends(compile)
+    ant.java(classname:'org.codehaus.groovy.typesheet.parser.Main') {
+        arg(value: testSourceDir + '/ex01.ts')
+        classpath {
+            pathelement ( location : binDir )
+            pathelement ( location : testBinDir ) 
+            path ( refid : 'compileJarSet' )    
+        }        
+    }
+}
+
 
 setDefaultTarget(test)

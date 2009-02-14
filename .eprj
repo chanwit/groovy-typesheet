@@ -31,6 +31,7 @@
                 <string>TEST-*</string>
                 <string>*.g</string>
                 <string>*.testsuite</string>
+                <string>*.ts</string>
             </array>
         </dict>
         <key>fileTriggers</key>

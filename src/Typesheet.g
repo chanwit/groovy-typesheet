@@ -11,7 +11,7 @@ tokens {
     UNIT;
     ASPECT;
     CLASS;
-    CLASS_MATCHER;
+    CLASS_PCD;
     METHOD_BLOCK;
     METHOD_MATCHER;
     VAR_DECL_LIST;
@@ -52,6 +52,9 @@ tokens {
     MODIFIERS;
     STATIC = 'static';
     
+    FIELD_BLOCK;
+    FIELD_PCD;
+    
     AND;
 }
 
@@ -60,7 +63,7 @@ tokens {
 
 compilationUnit
     :
-        classBlock+
+        (classBlock WS?)+
 
         -> ^(UNIT classBlock+)
     ;
@@ -76,7 +79,7 @@ classPCD
     :
         'class' WS? '(' WS? classPattern WS? ')'
 
-        -> ^(CLASS_MATCHER classPattern)
+        -> ^(CLASS_PCD classPattern)
     ;
 
 classPattern
@@ -95,16 +98,20 @@ modifiers
     ;
 
 member
-    :
-        fieldBlock
+    :   fieldBlock
+    |   methodBlock
     ;
 
 fieldBlock
     :   fieldPCD WS? '{' WS? retypeDecl+ WS? '}'
+    
+        -> ^(FIELD_BLOCK fieldPCD retypeDecl+)
     ;
 
 fieldPCD
     :   'field' WS? '(' WS? bindingList WS? ')'
+    
+        -> ^(FIELD_PCD bindingList)
     ;
 
 methodBlock
@@ -270,7 +277,11 @@ bindingList
     ;
 
 qualifiedPattern
-    :   qualifiedPatternHead array? subclass?
+    :   
+        qualifiedPatternHead 
+        -> ^(PATTERN qualifiedPatternHead)
+        
+    |   qualifiedPatternHead array? subclass?
         -> ^(PATTERN qualifiedPatternHead ^(PAT_OPTION array? subclass?))
 
     |   primitives array?
