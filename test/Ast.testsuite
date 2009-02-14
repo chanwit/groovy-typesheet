@@ -12,7 +12,7 @@ classPCD:
     "class(int)" -> (CLASS_MATCHER (PRIMITIVE int))
     "class(java.lang.Object+)" -> (CLASS_MATCHER (PATTERN java . lang . Object (PAT_OPTION MATCH_SUBCLASS)))
     "class(java.lang.Object[])" -> (CLASS_MATCHER (PATTERN java . lang . Object (PAT_OPTION ARRAY)))
-    "class(java.lang.Object)" -> (CLASS_MATCHER (PATTERN java . lang . Object PAT_OPTION))  
+    "class(java.lang.Object)" -> (CLASS_MATCHER (PATTERN java . lang . Object PAT_OPTION))
 
 argsPCD:
     "args(a,b,c)" -> (ARGS_PCD a b c)
@@ -27,37 +27,22 @@ methodPCD:
 methodBlock:
 <<
 method(name) {
-    args(a,b,c) { a ~> int; } 
+    args(a,b,c) { a ~> int; }
 }
 >> -> (METHOD_BLOCK (METHOD_PCD name) (ARGS_BLOCK (ARGS_PCD a b c) (RETYPE a (PRIMITIVE int))))
 <<
 method(static java.Main#name(int, String[])) {
-    local(a,b,c) { 
+    local(a,b,c) {
         a,b ~> String;
-        c ~> int;        
+        c ~> int;
     }
-    args(a,b,c) { a ~> int; } 
+    args(a,b,c) { a ~> int; }
 }
 >> -> (METHOD_BLOCK (METHOD_PCD static (PATTERN java . Main PAT_OPTION) name (PRIMITIVE int) (PATTERN String (PAT_OPTION ARRAY))) (LOCAL_BLOCK (LOCAL_PCD a b c) (RETYPE a b (TYPE String)) (RETYPE c (PRIMITIVE int))) (ARGS_BLOCK (ARGS_PCD a b c) (RETYPE a (PRIMITIVE int))))
-
-/*
-    "method(name)" -> (METHOD_PCD name)
-    "method(name(a))" -> (METHOD_PCD name (ARG a))
-    "method(name(a)"                            FAIL
-    "method(name(int,int,a))" -> (METHOD_PCD name (ARG (PRIMITIVE int)) (ARG (PRIMITIVE int)) (ARG a))
-    "method(public   name(int,a))" -> (METHOD_PCD public name (ARG (PRIMITIVE int)) (ARG a))
-    "method(static public   name(int,a))" -> (METHOD_PCD static public name (ARG (PRIMITIVE int)) (ARG a))
-    "method(static * name(int ,a))" -> (METHOD_PCD static * name (ARG (PRIMITIVE int)) (ARG a))
-    "method(static name(int, a))" -> (METHOD_PCD static name (ARG (PRIMITIVE int)) (ARG a))
-    "method(static name(Object+ b,*,a))" -> (METHOD_PCD static name (ARG (PATTERN Object (PAT_OPTION MATCH_SUBCLASS)) b) (ARG (PATTERN * PAT_OPTION)) (ARG a))
-    "method(name(Object+ b,* c,a))" -> (METHOD_PCD name (ARG (PATTERN Object (PAT_OPTION MATCH_SUBCLASS)) b) (ARG (PATTERN * PAT_OPTION) c) (ARG a))
-
-    // test cases with return type
-    "method(void name(int))"                              OK
-    "method(java.lang.Object name(int))"                  OK
-    "method(static public java.lang.Object name(int))"    OK
-    "method(static * java.lang.Object name(int))"         OK
-    "method(* java.lang.Object name(int))"                OK
-    "method(* java.*lang.Object name(int))"               OK
-    "method(* java.lang.Object name(int))"                OK
-*/
+<<
+method(name) {
+    args(a) && match (a) {
+        case call(Integer#test(*)): { a ~> String; }
+    }
+}
+>> -> (METHOD_BLOCK (METHOD_PCD name) (AND (ARGS_PCD a) (MATCH_BLOCK (MATCH_PCD a) (CASE (CALL_PCD (PATTERN Integer PAT_OPTION) test (PATTERN * PAT_OPTION)) (RETYPE a (TYPE String))))))

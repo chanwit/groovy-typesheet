@@ -222,9 +222,9 @@ matchBlockBody
     ;
 
 caseStmt
-    :   'case' WS? ':' WS? callBlock
+    :   'case' WS? callPCD WS? ':' WS? '{' WS? (retypeDecl WS?)+ WS? '}'
 
-        -> ^(CASE callBlock)
+        -> ^(CASE callPCD retypeDecl+)
     ;
 
 defaultStmt

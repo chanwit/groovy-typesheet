@@ -124,6 +124,24 @@ method(name(Object[][]+, long, int, String+)) {
 }
 >>                                                      OK
 
+<<
+method(name(Object[][]+, long, int, String+)) {
+    local(x) { x ~> int;}
+    args(a,b,c,d) { a ~> int;}
+    args(a) && match(a) {
+        case call(Integer#plus(*)): { a ~> int; }
+        default: { a ~> Integer; }
+    }
+    call(println(*)) && args(a) {
+        a ~> int;
+    }
+    call(println(*)) && args(a) && match(a) {
+        case call(Integer#plus(*)): { a ~> int; }
+        default: { a ~> Integer; }
+    }
+}
+>>                                                      OK
+
 /*
 methodArgs:
     "(a)"    OK
