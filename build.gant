@@ -47,10 +47,10 @@ doCompile = { classpathRef, srcDir, destDir ->
         arg(value: "-fo")
         arg(value: "src/org/codehaus/groovy/typesheet/parser")
         classpath {
-            path ( refid : classpathRef )    
+            path ( refid : classpathRef )
         }
     }
-    
+
     // compile source
     ant.groovyc(srcdir: srcDir,
                 destdir: destDir,
@@ -144,17 +144,17 @@ target(gunit:'Perform gunit') {
     depends(compile)
     def tests=[testcase]
 
-    if(testcase==null) 
+    if(testcase==null)
         tests = ['Typesheet', 'Ast']
 
     tests.each { t ->
         ant.echo("testing " + t + ".testsuite")
-        ant.java(classname: 'org.antlr.gunit.Interp', fork: true) {        
+        ant.java(classname: 'org.antlr.gunit.Interp', fork: true) {
             arg(value: testSourceDir + "/" + t + ".testsuite")
             classpath {
                 pathelement ( location : binDir )
-                pathelement ( location : testBinDir ) 
-                path ( refid : 'compileJarSet' )    
+                pathelement ( location : testBinDir )
+                path ( refid : 'compileJarSet' )
             }
         }
     }
@@ -169,12 +169,12 @@ target(coverage:'Coverate tests') {
 target(run:'Test run') {
     depends(compile)
     ant.java(classname:'org.codehaus.groovy.typesheet.parser.Main') {
-        arg(value: testSourceDir + '/ex01.ts')
+        arg(value: testSourceDir + '/ex01.gts')
         classpath {
             pathelement ( location : binDir )
-            pathelement ( location : testBinDir ) 
-            path ( refid : 'compileJarSet' )    
-        }        
+            pathelement ( location : testBinDir )
+            path ( refid : 'compileJarSet' )
+        }
     }
 }
 

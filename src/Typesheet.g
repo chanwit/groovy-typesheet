@@ -63,9 +63,9 @@ tokens {
 
 compilationUnit
     :
-        (classBlock WS?)+
+        'typesheet' WS? qualifiedIdentifier WS? '{' WS? (classBlock WS?)+ WS? '}'
 
-        -> ^(UNIT classBlock+)
+        -> ^(UNIT qualifiedIdentifier classBlock+)
     ;
 
 classBlock

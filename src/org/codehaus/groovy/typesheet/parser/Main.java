@@ -11,7 +11,7 @@ static final TreeAdaptor adaptor = new CommonTreeAdaptor() {
 	}
 };
 
-    public static CommonTree getAst(String filename) {
+    public static CommonTree getAst(String filename) throws Throwable {
         ANTLRFileStream fs = new ANTLRFileStream(filename);
 		TypesheetLexer lex = new TypesheetLexer(fs);
 		TokenRewriteStream tokens = new TokenRewriteStream(lex);
