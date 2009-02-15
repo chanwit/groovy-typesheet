@@ -57,6 +57,8 @@
             <string>src\org\codehaus\groovy\typesheet\parser\CodeGenerator.java</string>
             <key>gener</key>
             <string>src\org\codehaus\groovy\typesheet\parser\CodeGenerator.java</string>
+            <key>ma</key>
+            <string>src\org\codehaus\groovy\typesheet\template\Main.java</string>
             <key>main</key>
             <string>src\org\codehaus\groovy\typesheet\parser\Main.java</string>
             <key>par</key>

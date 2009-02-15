@@ -51,18 +51,26 @@ public class NewCodeGenerator implements Opcodes {
     def getInternalName(s) {
         return s.replace(".", "/")
     }
-    
-    
+        
     def genMember(CommonTree t) {
+        guard(t, MEMBER, "not member")
+        
         
     }
     
     def genClassPCD(CommonTree t) {
-        if(t.token.type != )
+        guard(t, CLASS_PCD, "not class pcd")
+        
+        
     }
     
     def genClassBlock(CommonTree t) {
         guard(t, CLASS, "not class block")
+        
+        // pseudo code
+        // m.method {
+        //    
+        // }
 
         genClassPCD(t.children[0])
         t.children[1..-1].each {
