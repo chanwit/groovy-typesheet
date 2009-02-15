@@ -23,7 +23,10 @@ static final TreeAdaptor adaptor = new CommonTreeAdaptor() {
     }
 
 	public static void main(String[] args) throws Throwable {
-		printTree(getAst(args[0]), 0);
+	    CommonTree ast = getAst(args[0]);
+		//printTree(ast, 0);		
+		CodeGenerator cg = new CodeGenerator(ast);
+		cg.generate();
 	}
 	
 	public static void printTree(CommonTree t, int indent) {

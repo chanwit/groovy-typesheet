@@ -12,6 +12,9 @@
                 <string>bin-groovy</string>
                 <string>classes</string>
                 <string>test-classes</string>
+                <string>.externalToolBuilders</string>
+                <string>ivy</string>
+                <string>lib</string>
             </array>
             <key>excludeFiles</key>
             <array>
@@ -38,10 +41,26 @@
         </dict>
         <key>fileTriggers</key>
         <dict>
+            <key>.groovy</key>
+            <string>..\gjit\test\minimal\AddSubject.groovy</string>
+            <key>AspectMetaclassCreationHandle</key>
+            <string>..\groovy-aop\src\org\codehaus\groovy\aop\metaclass\AspectMetaclassCreationHandle.java</string>
+            <key>asp</key>
+            <string>..\groovy-aop\src\org\codehaus\groovy\aop\metaclass\AspectMetaClass.java</string>
+            <key>aspectwa</key>
+            <string>..\groovy-aop\src\org\codehaus\groovy\aop\metaclass\AspectAwareCallSite.java</string>
             <key>b</key>
             <string>src\org\codehaus\groovy\typesheet\Builder.java</string>
             <key>bui</key>
             <string>src\org\codehaus\groovy\typesheet\Builder.java</string>
+            <key>gener</key>
+            <string>src\org\codehaus\groovy\typesheet\parser\CodeGenerator.java</string>
+            <key>main</key>
+            <string>src\org\codehaus\groovy\typesheet\parser\Main.java</string>
+            <key>par</key>
+            <string>src\org\codehaus\groovy\typesheet\parser\TypesheetParser.java</string>
+            <key>parse</key>
+            <string>src\org\codehaus\groovy\typesheet\parser\TypesheetParser.java</string>
             <key>ty</key>
             <string>src\org\codehaus\groovy\typesheet\dom\Type.java</string>
         </dict>
