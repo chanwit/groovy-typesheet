@@ -53,6 +53,8 @@
             <string>src\org\codehaus\groovy\typesheet\Builder.java</string>
             <key>bui</key>
             <string>src\org\codehaus\groovy\typesheet\Builder.java</string>
+            <key>clas</key>
+            <string>test\org\codehaus\groovy\asm\ClassBuilderTests.groovy</string>
             <key>code</key>
             <string>src\org\codehaus\groovy\typesheet\parser\CodeGenerator.java</string>
             <key>gener</key>
@@ -61,6 +63,10 @@
             <string>src\org\codehaus\groovy\typesheet\template\Main.java</string>
             <key>main</key>
             <string>src\org\codehaus\groovy\typesheet\parser\Main.java</string>
+            <key>new</key>
+            <string>src\org\codehaus\groovy\typesheet\parser\NewCodeGenerator.groovy</string>
+            <key>newco</key>
+            <string>src\org\codehaus\groovy\typesheet\parser\NewCodeGenerator.groovy</string>
             <key>par</key>
             <string>src\org\codehaus\groovy\typesheet\parser\TypesheetParser.java</string>
             <key>parse</key>
