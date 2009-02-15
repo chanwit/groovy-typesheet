@@ -25,7 +25,7 @@ static final TreeAdaptor adaptor = new CommonTreeAdaptor() {
 	public static void main(String[] args) throws Throwable {
 	    CommonTree ast = getAst(args[0]);
 		//printTree(ast, 0);		
-		CodeGenerator cg = new CodeGenerator(ast);
+		NewCodeGenerator cg = new NewCodeGenerator(ast);
 		cg.generate();
 	}
 	
