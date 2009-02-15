@@ -28,18 +28,22 @@ public class NewCodeGenerator implements Opcodes {
         genClass(this.ast)
         return cw.toByteArray()
     }
+    
+    def guard(t, type, msg) {
+        if(t.token.type != type) throw new RuntimeException(msg)
+    }
 
     /**
-    *   Traversal throu ^(. A B) to construct a fully string
+    *   Traversal through ^(. A B) to construct a fully string
     **/
     def getQualifiedIdent(CommonTree t) {
-        if(t.token.type != DOT) throw new RuntimeException("not dot")
+        guard(t, DOT, "not dot")
 
         def c0 = t.children[0]
         def s = c0.toString()
-        if(c0.token.type == DOT) {
+        if(c0.token.type == DOT) 
             s = getQualifiedIdent(c0)
-        }
+
         def c1 = t.children[1]
         return s + "." + c1.toString()
     }
@@ -47,15 +51,30 @@ public class NewCodeGenerator implements Opcodes {
     def getInternalName(s) {
         return s.replace(".", "/")
     }
+    
+    
+    def genMember(CommonTree t) {
+        
+    }
+    
+    def genClassPCD(CommonTree t) {
+        if(t.token.type != )
+    }
+    
+    def genClassBlock(CommonTree t) {
+        guard(t, CLASS, "not class block")
+
+        genClassPCD(t.children[0])
+        t.children[1..-1].each {
+            genMember(it)
+        }
+    }
 
     def genClass(CommonTree t) {
         if(!t) throw new RuntimeException("error")
-        if(t.token.type !=  UNIT) throw new RuntimeException("not unit")
+        guard(t, UNIT, "not unit")
 
-        // System.out.println("token: " + t.getToken());
-        // System.out.println("token: " + ((CommonTree)t.getChild(0)).getToken());
-
-        // child(0) is the name node
+        // children[0] is the name node
         className = getQualifiedIdent(t.children[0])
         internalClassName = getInternalName(className)
 
@@ -63,7 +82,7 @@ public class NewCodeGenerator implements Opcodes {
             internalClassName, null,
             "java/lang/Object", null)
 
-        // chile(1..N) are class blocks
+        // children[1..N] are class blocks
         t.children[1..-1].each {
             genClassBlock(it)
         }

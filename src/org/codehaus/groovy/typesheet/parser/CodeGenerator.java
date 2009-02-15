@@ -64,7 +64,7 @@ public class CodeGenerator implements Opcodes {
 
         // chile(1..N) are class blocks
         for(int i=1; i<t.getChildCount(); i++) {
-            genClassBlock((CommonTree)t.getChild(i));
+            //genClassBlock((CommonTree)t.getChild(i));
         }
 
         cw.visitEnd();
