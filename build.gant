@@ -19,14 +19,15 @@ coberturaReportDir	=outDir+ 'cobertura-reports/'
 distDir='dist/'
 
 ant.path ( id : 'compileJarSet' ) {
-  fileset ( dir : groovyHome + '/lib' , includes : 'groovy*.jar' )
-  fileset ( dir : groovyHome + '/lib' , includes : 'commons-cli*.jar' )
-  fileset ( dir : groovyHome + '/lib' , includes : 'asm*.jar' )
-  // Picks up antlr as well as ant. This is intended.
-  fileset ( dir : groovyHome + '/lib' , includes : 'ant-*.jar' )
-
-  // local lib
-  fileset ( dir : './lib'  , includes : 'ant*.jar' )
+    fileset ( dir : groovyHome + '/lib' , includes : 'groovy*.jar' )
+    fileset ( dir : groovyHome + '/lib' , includes : 'commons-cli*.jar' )
+    // fileset ( dir : groovyHome + '/lib' , includes : 'asm*.jar' )
+    // Picks up antlr as well as ant. This is intended.
+    fileset ( dir : groovyHome + '/lib' , includes : 'ant-*.jar' )
+    
+    // local lib
+    fileset ( dir : './lib' , includes : 'asm-all-3.1.jar' )
+    fileset ( dir : './lib' , includes : 'ant*.jar' )
     fileset ( dir : './lib' , includes : 'stringtemplate*.jar')
 }
 
@@ -178,5 +179,16 @@ target(run:'Test run') {
     }
 }
 
+target("gen-asm":'Generate ASM') {
+    depends(compile)
+    ant.java(classname:'org.objectweb.asm.util.ASMifierClassVisitor', fork: true) {
+        arg(value: "org.codehaus.groovy.typesheet.template.Main")        
+        classpath {
+            pathelement ( location : binDir )
+            pathelement ( location : testBinDir )
+            path ( refid : 'compileJarSet' )
+        }
+    }
+}
 
 setDefaultTarget(test)

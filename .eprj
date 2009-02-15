@@ -32,6 +32,8 @@
                 <string>*.g</string>
                 <string>*.testsuite</string>
                 <string>*.gts</string>
+                <string>*.bat</string>
+                <string>*.sh</string>
             </array>
         </dict>
         <key>fileTriggers</key>

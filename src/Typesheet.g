@@ -29,7 +29,7 @@ tokens {
     PRIMITIVE;
     ARRAY;
     PATTERN;
-    PAT_OPTION;
+    OPT;
     MATCH_SUBCLASS;
 
     MATCH_PCD;
@@ -168,11 +168,11 @@ methodArgBinding
 
 methodBlockMember
     :   argsBlock
-    |   argsPCD WS? '&&' WS? matchBlock -> ^(AND argsPCD matchBlock)
+    |   argsPCD WS? '&&' WS? matchBlock                         -> ^(AND argsPCD matchBlock)
     |   localBlock
     |   callBlock
-    |   callPCD WS? '&&' WS? argsBlock -> ^(AND callPCD argsBlock)
-    |   callPCD WS? '&&' WS? argsPCD WS? '&&' WS? matchBlock -> ^(AND callPCD argsPCD matchBlock)
+    |   callPCD WS? '&&' WS? argsBlock                          -> ^(AND callPCD argsBlock)
+    |   callPCD WS? '&&' WS? argsPCD WS? '&&' WS? matchBlock    -> ^(AND callPCD argsPCD matchBlock)
     ;
 
 localBlock
@@ -277,12 +277,8 @@ bindingList
     ;
 
 qualifiedPattern
-    :   
-        qualifiedPatternHead 
-        -> ^(PATTERN qualifiedPatternHead)
-        
-    |   qualifiedPatternHead array? subclass?
-        -> ^(PATTERN qualifiedPatternHead ^(PAT_OPTION array? subclass?))
+    :   qualifiedPatternHead array? subclass?
+        -> ^(PATTERN qualifiedPatternHead ^(OPT array? subclass?))
 
     |   primitives array?
         -> ^(PRIMITIVE primitives array?)

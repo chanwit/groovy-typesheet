@@ -9,10 +9,10 @@ retypeDecl:
     "n ~> int;" -> (RETYPE n (PRIMITIVE int))
 
 classPCD:
-    "class(int)" -> (CLASS_MATCHER (PRIMITIVE int))
-    "class(java.lang.Object+)" -> (CLASS_MATCHER (PATTERN java . lang . Object (PAT_OPTION MATCH_SUBCLASS)))
-    "class(java.lang.Object[])" -> (CLASS_MATCHER (PATTERN java . lang . Object (PAT_OPTION ARRAY)))
-    "class(java.lang.Object)" -> (CLASS_MATCHER (PATTERN java . lang . Object PAT_OPTION))
+    "class(int)" -> (CLASS_PCD (PRIMITIVE int))
+    "class(java.lang.Object+)" -> (CLASS_PCD (PATTERN java . lang . Object (OPT MATCH_SUBCLASS)))
+    "class(java.lang.Object[])" -> (CLASS_PCD (PATTERN java . lang . Object (OPT ARRAY)))
+    "class(java.lang.Object)" -> (CLASS_PCD (PATTERN java . lang . Object OPT))
 
 argsPCD:
     "args(a,b,c)" -> (ARGS_PCD a b c)
@@ -21,8 +21,8 @@ methodPCD:
     "method(name)" -> (METHOD_PCD name)
     "method(name())" -> (METHOD_PCD name)
     "method(name(int))" -> (METHOD_PCD name (PRIMITIVE int))
-    "method(Class#name(int))" -> (METHOD_PCD (PATTERN Class PAT_OPTION) name (PRIMITIVE int))
-    "method(name(Object[]+, long, String+))" -> (METHOD_PCD name (PATTERN Object (PAT_OPTION ARRAY MATCH_SUBCLASS)) (PRIMITIVE long) (PATTERN String (PAT_OPTION MATCH_SUBCLASS)))
+    "method(Class#name(int))" -> (METHOD_PCD (PATTERN Class OPT) name (PRIMITIVE int))
+    "method(name(Object[]+, long, String+))" -> (METHOD_PCD name (PATTERN Object (OPT ARRAY MATCH_SUBCLASS)) (PRIMITIVE long) (PATTERN String (OPT MATCH_SUBCLASS)))
 
 methodBlock:
 <<
@@ -38,11 +38,11 @@ method(static java.Main#name(int, String[])) {
     }
     args(a,b,c) { a ~> int; }
 }
->> -> (METHOD_BLOCK (METHOD_PCD static (PATTERN java . Main PAT_OPTION) name (PRIMITIVE int) (PATTERN String (PAT_OPTION ARRAY))) (LOCAL_BLOCK (LOCAL_PCD a b c) (RETYPE a b (TYPE String)) (RETYPE c (PRIMITIVE int))) (ARGS_BLOCK (ARGS_PCD a b c) (RETYPE a (PRIMITIVE int))))
+>> -> (METHOD_BLOCK (METHOD_PCD static (PATTERN java . Main OPT) name (PRIMITIVE int) (PATTERN String (OPT ARRAY))) (LOCAL_BLOCK (LOCAL_PCD a b c) (RETYPE a b (TYPE String)) (RETYPE c (PRIMITIVE int))) (ARGS_BLOCK (ARGS_PCD a b c) (RETYPE a (PRIMITIVE int))))
 <<
 method(name) {
     args(a) && match (a) {
         case call(Integer#test(*)): { a ~> String; }
     }
 }
->> -> (METHOD_BLOCK (METHOD_PCD name) (AND (ARGS_PCD a) (MATCH_BLOCK (MATCH_PCD a) (CASE (CALL_PCD (PATTERN Integer PAT_OPTION) test (PATTERN * PAT_OPTION)) (RETYPE a (TYPE String))))))
+>> -> (METHOD_BLOCK (METHOD_PCD name) (AND (ARGS_PCD a) (MATCH_BLOCK (MATCH_PCD a) (CASE (CALL_PCD (PATTERN Integer OPT) test (PATTERN * OPT)) (RETYPE a (TYPE String))))))
