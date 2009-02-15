@@ -5,47 +5,47 @@ import org.objectweb.asm.*
 class ClassBuilder implements Opcodes {
 
     ClassWriter cw = new ClassWriter(ClassWriter.COMPUTE_MAXS)
-    
+
     private FieldVisitor fv
     private MethodVisitor mv
     private AnnotationVisitor av0
-    
+
     private boolean classInitialized = false
-    
+
     // Class Name
-    private String className    
+    private String className
     // Class File version
     private int version = V1_3
     // Modifier flags
     private int modifiers
-    
+
     def doClassConstruction() {
-        cw.visit(this.version, 
-            this.modifiers + ACC_SUPER, 
-            this.className, 
+        cw.visit(this.version,
+            this.modifiers + ACC_SUPER,
+            this.className,
             null,               // TODO interfaces
             "java/lang/Object", // TODO super class
             null)               // TODO exception tables
-            
+
         this.classInitialized = true
-    }    
+    }
 
     def newClass(modifiers, args) {
         // set modifiers
         this.modifiers = modifiers
-        
+
         // get name parameter
         if(args[0] instanceof Map) {
             this.className = args[0]["name"]
-        } else {
+        } else if (args.length==2 && args[0] instanceof String) {
             this.className = args[0]
         }
 
         // this is to invoke class body construction
-        // we expect 
+        // we expect
         // version to be set
         // at least, one method builder to be called (for triggering #doClassConstruction)
-        // {            
+        // {
         //      version 1.5
         //      public_method(name:"<init>()V") { }
         // }
@@ -53,36 +53,47 @@ class ClassBuilder implements Opcodes {
         classBody.delegate = this
         classBody.resolveStrategy = Closure.DELEGATE_FIRST
         classBody.call()
-        
+
         // no method builder has been called to trigger class construction?
         // so we need to do something
         if(!classInitialized) {
-            doClassConstruction()            
+            doClassConstruction()
         }
         cw.visitEnd()
     }
-    
+
     def newMethod(modifiers, args) {
         if(!classInitialized) {
             doClassConstruction()
         }
-        
+
         // get name parameter
-        def name
+        def name = args[0]
         if(args[0] instanceof Map) {
             name = args[0]["name"]
-        } else {
+        } else if (args.length==2 && args[0] instanceof String) {
             name = args[0]
-        }        
-                
+        } else if (args.length==3) {
+            name = args[1] + "()" + Type.getDescriptor(args[0])
+        } else if (args.length > 3) {
+            // args[0] = return type
+            // args[1] = name
+            // args[2..-2] = (method types)
+            name = args[1] + "("
+            args[2..-2].each {
+                name += Type.getDescriptor(it)
+            }
+            name += ")" + Type.getDescriptor(args[0])
+        }
+
         // get closure from the last argument
-        def methodBody = args[-1]            
-        
-        // create a method builder for each method    
+        def methodBody = args[-1]
+
+        // create a method builder for each method
         def mb = new MethodBuilder(
             classBuilder: this,
-            name: name, 
-            modifiers: modifiers, 
+            name: name,
+            modifiers: modifiers,
             methodBody: methodBody)
         mb.build()
     }
@@ -97,7 +108,7 @@ class ClassBuilder implements Opcodes {
 
         return m
     }
-    
+
     def version(arg) {
         switch(arg) {
             case 1.1:   this.version = V1_1; break;
@@ -112,7 +123,7 @@ class ClassBuilder implements Opcodes {
     def methodMissing(String name, args) {
         def names = name.split("_")
         def mods = getModifiers(names)
-        
+
         switch(names[-1]) {
             case "class": newClass(mods, args); break // support only one param
             case "method": newMethod(mods, args); break

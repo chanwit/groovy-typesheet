@@ -65,6 +65,8 @@
             <string>src\org\codehaus\groovy\typesheet\template\Main.java</string>
             <key>main</key>
             <string>src\org\codehaus\groovy\typesheet\parser\Main.java</string>
+            <key>met</key>
+            <string>src\org\codehaus\groovy\asm\MethodBuilder.groovy</string>
             <key>meth</key>
             <string>src\org\codehaus\groovy\asm\MethodBuilder.groovy</string>
             <key>new</key>

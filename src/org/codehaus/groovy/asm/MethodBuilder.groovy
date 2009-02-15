@@ -8,33 +8,33 @@ class MethodBuilder implements Opcodes {
     String name
     int modifiers
     Closure methodBody
-    
+
     MethodVisitor mv
-    
+
     private getClassName(owner) {
         def ownerName = owner;
         if(owner instanceof Class) {
             ownerName = owner.name.replace(".", "/")
         }
-        return ownerName     
+        return ownerName
     }
-    
+
     private splitNameDesc(s) {
         [s[0..s.indexOf('(')-1], s[s.indexOf('(')..-1]]
     }
-        
-    def build() {
-        def (n, desc) = splitNameDesc(this.name)
+
+    def build() {        
+        def (n, desc) = splitNameDesc(this.name)    
         this.mv = classBuilder.cw.visitMethod(modifiers, n, desc, null, null);
-        
+
         methodBody.delegate = this
         methodBody.resolveStrategy = Closure.DELEGATE_FIRST
         methodBody.call()
-        
+
         mv.visitMaxs(0,0);
         mv.visitEnd();
     }
-    
+
     def getNop(){
         mv.visitInsn(Opcodes.NOP)
     }
@@ -597,7 +597,7 @@ class MethodBuilder implements Opcodes {
 
     //    * opcode must be INVOKEVIRTUAL, INVOKESPECIAL, INVOKESTATIC or
     //    * INVOKEINTERFACE.
-    def invokevirtual(owner, name, desc=null) {        
+    def invokevirtual(owner, name, desc=null) {
         if(!desc) (name, desc) = splitNameDesc(name)
         mv.visitMethodInsn(Opcodes.INVOKEVIRTUAL, getClassName(owner), name, desc)
     }
@@ -687,6 +687,6 @@ class MethodBuilder implements Opcodes {
 
     def ret(int var) {
         mv.visitVarInsn(Opcodes.RET, var)
-    }    
-    
+    }
+
 }
