@@ -83,13 +83,10 @@ public class NewCodeGenerator {
         internalClassName = getInternalName(className)
 
         cb.public_class(name: internalClassName) {
-            // assert delegate instanceof ClassBuilder
             version 1.5
 
             public_method(name:"<init>()V") {
-                // assert delegate instanceof MethodBuilder
                 aload 0
-//                invokespecial Object.class, "<init>", "()V"
                 invokespecial "java/lang/Object", "<init>()V"
                 _return
             }
