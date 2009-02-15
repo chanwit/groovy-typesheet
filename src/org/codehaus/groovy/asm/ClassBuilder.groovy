@@ -4,7 +4,7 @@ import org.objectweb.asm.*
 
 class ClassBuilder implements Opcodes {
 
-    ClassWriter cw = new ClassWriter(0)
+    ClassWriter cw = new ClassWriter(ClassWriter.COMPUTE_MAXS)
     
     private FieldVisitor fv
     private MethodVisitor mv

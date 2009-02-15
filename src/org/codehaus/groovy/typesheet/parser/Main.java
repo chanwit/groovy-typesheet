@@ -26,7 +26,7 @@ static final TreeAdaptor adaptor = new CommonTreeAdaptor() {
 	    CommonTree ast = getAst(args[0]);
 		//printTree(ast, 0);		
 		NewCodeGenerator cg = new NewCodeGenerator(ast);
-		// println byte[]
+
 		System.out.println(cg.generate());
 	}
 	

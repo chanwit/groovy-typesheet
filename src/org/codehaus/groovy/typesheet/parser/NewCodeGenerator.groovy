@@ -75,7 +75,6 @@ public class NewCodeGenerator {
     }
 
     def genClass(CommonTree t) {
-        if(!t) throw new RuntimeException("error")
         guard(t, UNIT, "not unit")
 
         // children[0] is the name node
@@ -83,11 +82,13 @@ public class NewCodeGenerator {
         internalClassName = getInternalName(className)
 
         cb.public_class(name: internalClassName) {
+            // set class file version to Java 1.5
             version 1.5
 
+            // create the default constructor
             public_method(name:"<init>()V") {
                 aload 0
-                invokespecial "java/lang/Object", "<init>()V"
+                invokespecial Object.class, "<init>", "()V"
                 _return
             }
 

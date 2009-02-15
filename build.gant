@@ -80,7 +80,7 @@ doTesting = { classpathRef ->
     }
   }
 
-  ant.junit ( printsummary : 'yes' , failureproperty : 'testsFailed' , fork : 'true' ) {
+  ant.junit ( printsummary : 'yes' , failureproperty : 'testsFailed' ) {
     formatter ( type : 'plain' )
     batchtest ( todir : testReportsDir ) {
       def includeNames = '**/*Tests.class'

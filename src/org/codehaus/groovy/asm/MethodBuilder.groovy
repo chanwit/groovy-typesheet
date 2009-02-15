@@ -11,14 +11,27 @@ class MethodBuilder implements Opcodes {
     
     MethodVisitor mv
     
+    private getClassName(owner) {
+        def ownerName = owner;
+        if(owner instanceof Class) {
+            ownerName = owner.name.replace(".", "/")
+        }
+        return ownerName     
+    }
+    
+    private splitNameDesc(s) {
+        [s[0..s.indexOf('(')-1], s[s.indexOf('(')..-1]]
+    }
+        
     def build() {
-        this.mv = classBuilder.cw.visitMethod(ACC_PUBLIC, "<init>", "()V", null, null);
+        def (n, desc) = splitNameDesc(this.name)
+        this.mv = classBuilder.cw.visitMethod(modifiers, n, desc, null, null);
         
         methodBody.delegate = this
         methodBody.resolveStrategy = Closure.DELEGATE_FIRST
         methodBody.call()
         
-        mv.visitMaxs(1,1);
+        mv.visitMaxs(0,0);
         mv.visitEnd();
     }
     
@@ -584,21 +597,24 @@ class MethodBuilder implements Opcodes {
 
     //    * opcode must be INVOKEVIRTUAL, INVOKESPECIAL, INVOKESTATIC or
     //    * INVOKEINTERFACE.
-
-    def invokevirtual(owner, name, desc) {
-        mv.visitMethodInsn(Opcodes.INVOKEVIRTUAL, owner, name, desc)
+    def invokevirtual(owner, name, desc=null) {        
+        if(!desc) (name, desc) = splitNameDesc(name)
+        mv.visitMethodInsn(Opcodes.INVOKEVIRTUAL, getClassName(owner), name, desc)
     }
 
-    def invokespecial(owner, name, desc) {
-        mv.visitMethodInsn(Opcodes.INVOKESPECIAL, owner, name, desc)
+    def invokespecial(owner, name, desc=null) {
+        if(!desc) (name, desc) = splitNameDesc(name)
+        mv.visitMethodInsn(Opcodes.INVOKESPECIAL, getClassName(owner), name, desc)
     }
 
-    def invokestatic(owner, name, desc) {
-        mv.visitMethodInsn(Opcodes.INVOKESTATIC, owner, name, desc)
+    def invokestatic(owner, name, desc=null) {
+        if(!desc) (name, desc) = splitNameDesc(name)
+        mv.visitMethodInsn(Opcodes.INVOKESTATIC, getClassName(owner), name, desc)
     }
 
-    def invokeinterface(owner, name, desc) {
-        mv.visitMethodInsn(Opcodes.INVOKEINTERFACE, owner, name, desc)
+    def invokeinterface(owner, name, desc=null) {
+        if(!desc) (name, desc) = splitNameDesc(name)
+        mv.visitMethodInsn(Opcodes.INVOKEINTERFACE, getClassName(owner), name, desc)
     }
 
     def multianewarray(desc, dims) {
