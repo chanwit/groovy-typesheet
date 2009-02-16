@@ -41,7 +41,7 @@ class ClassBuilderTests extends TestCase {
         Class classB = loadClass("my.class.B", bytes)
         assert classB.name == "my.class.B"
    }
-   
+
     void testBuildClass_2() {
         def cb = new ClassBuilder()
         cb.public_class("my/class/C") {
@@ -52,7 +52,7 @@ class ClassBuilderTests extends TestCase {
                 invokespecial Object, "<init>()V"
                 _return
             }
-            
+
             public_method (void, "me", int) {
                 _return
             }
@@ -64,6 +64,33 @@ class ClassBuilderTests extends TestCase {
         new File("C.class") << bytes
         Class classC = loadClass("my.class.C", bytes)
         assert classC.name == "my.class.C"
-   }   
+   }
+
+   void test_constructor() {
+        def cb = new ClassBuilder()
+        cb.public_class("my/class/D") {
+            version 1.6
+
+            public_constructor() {
+                aload 0
+                invokespecial Object, "<init>()V"
+                _return
+            }
+            
+            public_constructor(int) {
+                aload 0
+                invokespecial Object, "<init>()V"
+                _return                
+            }
+
+        }
+
+        def bytes = cb.cw.toByteArray()
+        assert bytes instanceof byte[]
+        new File("D.class").delete()
+        new File("D.class") << bytes
+        Class classD = loadClass("my.class.D", bytes)
+        assert classD.name == "my.class.D"
+   }
 
 }
