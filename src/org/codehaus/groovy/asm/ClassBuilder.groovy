@@ -56,16 +56,13 @@ class ClassBuilder implements Opcodes {
 
         // no method builder has been called to trigger class construction?
         // so we need to do something
-        if(!classInitialized) {
-            doClassConstruction()
-        }
+        if(!classInitialized) doClassConstruction()
+
         cw.visitEnd()
     }
 
     def newMethod(modifiers, args) {
-        if(!classInitialized) {
-            doClassConstruction()
-        }
+        if(!classInitialized) doClassConstruction()
 
         // get name parameter
         def name = args[0]
@@ -98,6 +95,29 @@ class ClassBuilder implements Opcodes {
         mb.build()
     }
 
+    def newConstructor(modifiers, args) {
+        if(!classInitialized) doClassConstruction()
+        
+        def name
+        if(args.length == 1) {
+            name = "<init>()V"
+        } else if(args.length > 1){
+            name = "<init>("
+            args[0..-2].each {
+                name += Type.getDescriptor(it)
+            }
+            name += ")V"
+        }
+
+        def ctorBody = args[-1]
+        def mb = new MethodBuilder(
+            classBuilder: this,
+            name: name,
+            modifiers: modifiers,
+            methodBody: ctorBody)
+        mb.build()
+    }
+
     def getModifiers(names) {
         def m = 0; // FIXME: ACC_DEFAULT ?
         if(names.any{it == "static"}) m += ACC_STATIC;
@@ -127,6 +147,8 @@ class ClassBuilder implements Opcodes {
         switch(names[-1]) {
             case "class": newClass(mods, args); break // support only one param
             case "method": newMethod(mods, args); break
+            case "constructor":
+                 "ctor": newConstructor(mods, args); break
         }
     }
 
