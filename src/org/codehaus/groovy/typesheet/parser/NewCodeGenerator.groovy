@@ -43,7 +43,7 @@ public class NewCodeGenerator {
             s = getQualifiedIdent(c0)
 
         def c1 = t.children[1]
-        return s + "." + c1.toString()
+        return "${s}.${c1.toString()}"
     }
 
     def genMember(CommonTree t) {
@@ -60,9 +60,9 @@ public class NewCodeGenerator {
     def genClassBlock(CommonTree t) {
         guard(t, CLASS, "not class block")
 
-        //public_method(name:"function_1()V") {
+        cb.public_method (void, "function_1") {
 
-        //}
+        }
 
         genClassPCD(t.children[0])
         t.children[1..-1].each {
@@ -86,7 +86,7 @@ public class NewCodeGenerator {
             version 1.5
 
             // create the default constructor
-            public_method(name:"<init>()V") {
+            public_constructor() {
                 aload 0
                 invokespecial Object.class, "<init>", "()V"
                 _return
