@@ -71,6 +71,8 @@
             <string>src\org\codehaus\groovy\asm\MethodBuilder.groovy</string>
             <key>new</key>
             <string>src\org\codehaus\groovy\typesheet\parser\NewCodeGenerator.groovy</string>
+            <key>newc</key>
+            <string>src\org\codehaus\groovy\typesheet\parser\NewCodeGenerator.groovy</string>
             <key>newco</key>
             <string>src\org\codehaus\groovy\typesheet\parser\NewCodeGenerator.groovy</string>
             <key>par</key>
