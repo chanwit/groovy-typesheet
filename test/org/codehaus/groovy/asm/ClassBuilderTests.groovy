@@ -27,7 +27,7 @@ class ClassBuilderTests extends TestCase {
         cb.public_class("my/class/B") {
             version 1.6
 
-            public_method name:"<init>()V", {
+            public_method (name:"<init>()V") {
                 aload 0
                 invokespecial Object.class, "<init>()V"
                 _return
