@@ -148,7 +148,7 @@ class ClassBuilder implements Opcodes {
             case "class": newClass(mods, args); break // support only one param
             case "method": newMethod(mods, args); break
             case "constructor":
-                 "ctor": newConstructor(mods, args); break
+            case "ctor": newConstructor(mods, args); break
         }
     }
 
