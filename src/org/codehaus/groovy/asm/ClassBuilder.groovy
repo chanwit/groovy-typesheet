@@ -6,10 +6,6 @@ class ClassBuilder implements Opcodes {
 
     ClassWriter cw = new ClassWriter(ClassWriter.COMPUTE_MAXS)
 
-    private FieldVisitor fv
-    private MethodVisitor mv
-    private AnnotationVisitor av0
-
     private boolean classInitialized = false
 
     // Class Name
@@ -97,7 +93,7 @@ class ClassBuilder implements Opcodes {
 
     def newConstructor(modifiers, args) {
         if(!classInitialized) doClassConstruction()
-        
+
         def name
         if(args.length == 1) {
             name = "<init>()V"
@@ -146,7 +142,9 @@ class ClassBuilder implements Opcodes {
 
         switch(names[-1]) {
             case "class": newClass(mods, args); break // support only one param
+
             case "method": newMethod(mods, args); break
+
             case "constructor":
             case "ctor": newConstructor(mods, args); break
         }
