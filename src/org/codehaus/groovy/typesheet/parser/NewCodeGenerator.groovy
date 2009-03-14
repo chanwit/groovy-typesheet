@@ -9,20 +9,20 @@ import org.codehaus.groovy.asm.*
 
 import static org.codehaus.groovy.typesheet.parser.TypesheetParser.*
 
-public class NewCodeGenerator {
+class NewCodeGenerator {
 
-    private CommonTree ast
+    CommonTree ast
 
-    private ClassBuilder cb = new ClassBuilder()
+    ClassBuilder cb = new ClassBuilder()
 
-    private String className
-    private String internalClassName
+    String className
+    String internalClassName
 
     NewCodeGenerator(CommonTree ast) {
         this.ast = ast
     }
 
-    public byte[] generate() {
+    byte[] generate() {
         genClass(this.ast)
         return cb.cw.toByteArray()
     }
